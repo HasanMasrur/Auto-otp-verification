@@ -1,8 +1,9 @@
-// ignore_for_file: must_be_immutable, unnecessary_new
+// ignore_for_file: must_be_immutable, unnecessary_new, sort_child_properties_last
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,50 +14,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   String phone = ' ';
   String phone_no = '';
-  bool is_futurebuilder = false;
-  bool is_futurebuilders = false;
   String? dropdownValue = 'Eng';
-
   List<String> lanvalur = ['Eng', 'বাংলা'];
   @override
   void initState() {
     phone = '';
     super.initState();
   }
-
-  // Future _submitForm(
-  //     BuildContext context, AuthProvider model, first_name, email) async {
-  //   DialogLoaderClass.confirmDialog(context, 'Loading...');
-  //   final Map<String, dynamic> authentication =
-  //       await model.authenticationSocialMedia(first_name, email);
-  //   print(authentication);
-  //   if (authentication['success']) {
-  //     Navigator.push(
-  //         context, MaterialPageRoute(builder: (context) => Dashboard()));
-  //   } else {
-  //     DialogClass.confirmDialog(context, authentication['message']);
-  //   }
-  // }
-
-  // void sharedPreferences() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   var a = await prefs.get('language');
-  //   print(a);
-  //   if (LocaleKeys.name.tr() == "Name") {
-  //     setState(() {
-  //       dropdownValue = "Eng";
-  //     });
-  //   } else {
-  //     setState(() {
-  //       dropdownValue = "বাংলা";
-  //     });
-  //   }
-  //   // if (a != null) {
-  //   //   setState(() {
-  //   //     dropdownValue = a.toString();
-  //   //   });
-  //   // }
-  // }
 
   ErrorIcon _errorWidget = new ErrorIcon(false);
 
@@ -92,8 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(
-                    left: 7.0.h,
-                    right: 7.0.h,
+                    left: 5.0.h,
+                    right: 5.0.h,
                   ),
                   height: 6.0.h,
                   width: 70.0.w,
@@ -103,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: Container(
                     padding: EdgeInsets.only(left: 3.0.w),
-                    width: 60.0.w,
+                    width: 70.0.w,
                     alignment: Alignment.center,
                     child: TextFormField(
                       textAlign: TextAlign.start,
@@ -111,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly
                       ],
-                      onChanged: (text) {
+                      onChanged: (text) async {
                         // DEFINE YOUR RULES HERE
                         // text[3].contains('1')
                         (text.contains("1") && text.length == 10)
@@ -119,11 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 phone = '';
                                 errorWidget = new ErrorIcon(false);
                                 FocusScope.of(context).unfocus();
-                                print('Phone number is : ');
-                                //  phone = "+880$text";
                                 phone_no = text;
-
-                                print(phone_no);
                               })
                             : setState(() {
                                 errorWidget = new ErrorIcon(true);
@@ -170,8 +130,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               print(phone.length);
                             },
                     )),
-                // shape: RoundedRectangleBorder(
-                //     borderRadius: BorderRadius.circular(20)),
               ),
               SizedBox(
                 height: 3.0.h,
@@ -183,47 +141,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-//   _submitFormauth(BuildContext context, AuthProvider singInModel) async {
-//     debugPrint('Phone no is submitted');
-//     String app_key = await SmsAutoFill().getAppSignature;
-//     await singInModel.refreshtoken();
-//     Map<String, dynamic>
-//         // doctor Sign up
-//         authentication = await singInModel.authentication(phone, app_key);
-//     if (authentication['success']) {
-//       ///   Navigator.pop(context, true);
-//       Navigator.push(context,
-//           MaterialPageRoute(builder: (context) => OtpScreen(phone, "login")));
-//     } else if (authentication['message'] == "already register") {
-//       Navigator.push(
-//           context, MaterialPageRoute(builder: (context) => SplashScreen()));
-//     } else {
-//       showDialog(
-//           // barrierColor: Color(0xFFdab13c),
-//           context: context,
-//           builder: (BuildContext context) {
-//             return AlertDialog(
-//               backgroundColor: Color(0xFFefe7dc),
-//               title: Text(
-//                 'An error Occurred',
-//               ),
-//               content: Text(
-//                 authentication['message'],
-//               ),
-//               actions: <Widget>[
-//                 FlatButton(
-//                   child: Text('Ok'),
-//                   onPressed: () {
-//                     Navigator.of(context).pop();
-//                   },
-//                 )
-//               ],
-//             );
-//           });
-//     }
-//   }
-// }
 
 class ErrorIcon extends StatelessWidget {
   bool _isError;
