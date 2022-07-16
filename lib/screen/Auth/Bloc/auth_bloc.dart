@@ -26,14 +26,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 "Failed TO FETCHED Help Repos! [${l.response?.statusCode}] -> [[${l.type.toString()}]]");
             final type = NetworkExceptions.getDioException(l);
             final message = NetworkExceptions.getErrorMessage(type);
-            emit(GetPackagedataLoadingUnsuccessful(
+            emit(AuthLoadingUnsuccessful(
                 message: message,
                 reason: message == "Unauthorized"
                     ? UnSuccessful.unAuthorize
                     : UnSuccessful.other));
           }, (r) {
             Map<String, dynamic> dataMap = r.data as Map<String, dynamic>;
-            emit(OtpAuthenticateLoaded(
+            print(
+                '----------------response data--------------------------------');
+            print(dataMap);
+            emit(AuthenticateSuccess(
               data: dataMap["data"],
             ));
           });
