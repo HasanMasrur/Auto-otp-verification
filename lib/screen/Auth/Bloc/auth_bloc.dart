@@ -33,11 +33,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                     : UnSuccessful.other));
           }, (r) {
             Map<String, dynamic> dataMap = r.data as Map<String, dynamic>;
-            print(
-                '----------------response data--------------------------------');
-            print(dataMap);
             emit(AuthenticateSuccess(
-              data: dataMap["data"],
+              data: dataMap,
             ));
           });
         });
