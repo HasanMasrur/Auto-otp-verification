@@ -4,25 +4,27 @@ import 'package:dio/dio.dart';
 
 class ApiProvider {
   final Dio dio = Dio(BaseOptions(
-    baseUrl: ConstantData.apiUrl,
+    baseUrl: ConstantData.BASE_URL,
     connectTimeout: 50000,
     receiveTimeout: 3000,
-    // headers: {
-    //   "X-Authorization" : "1y8eGr8r75OOp2D4aMtbsDe6RJbONQL6iIOdH67COieqflQUBu52xTMFgBa6VJdE"
-    // }
   ));
-  login({phone_no, app_key}) async {
+
+  Future<Either<DioError, Response>> login({phone_no, app_key}) async {
     final Map<String, dynamic> authdata = {
       'phone': phone_no,
       'app_key': app_key
     };
+    print('----------------authdata: ');
+    print(authdata);
     return await Task(() => dio.post(
-          '/user-api/v1/ride?',
+          '${ConstantData.SIGNUP_OTP}',
           data: authdata,
         )).attempt().run().then((either) {
       return either.fold((l) {
         return Left(l as DioError);
       }, (r) {
+        print('---------------- ');
+        print(r);
         return Right(r);
       });
     });

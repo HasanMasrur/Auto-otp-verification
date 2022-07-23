@@ -1,7 +1,13 @@
 // ignore_for_file: must_be_immutable, unnecessary_new, sort_child_properties_last
 
+import 'package:auto_opt_varifacation/screen/Auth/Bloc/auth_bloc.dart';
+import 'package:auto_opt_varifacation/screen/Auth/Bloc/auth_event.dart';
+import 'package:auto_opt_varifacation/screen/Auth/Bloc/auth_state.dart';
+import 'package:auto_opt_varifacation/screen/constantdata/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:sizer/sizer.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
@@ -42,8 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildProtraits() {
-    return SingleChildScrollView(
-      child: Form(
+    return BlocConsumer<AuthBloc, AuthState>(builder: (context, state) {
+      return SingleChildScrollView(
+          child: Form(
         key: _globalKey,
         child: Container(
           height: 100.0.h,
@@ -79,12 +86,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         // DEFINE YOUR RULES HERE
                         // text[3].contains('1')
                         (text.contains("1") && text.length == 10)
-                            ? setState(() {
+                            ? (setState(() {
                                 phone = '';
                                 errorWidget = new ErrorIcon(false);
                                 FocusScope.of(context).unfocus();
                                 phone_no = text;
-                              })
+                              }))
                             : setState(() {
                                 errorWidget = new ErrorIcon(true);
                                 phone_no = '';
@@ -102,43 +109,63 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   )),
               SizedBox(height: 3.0.h),
-              Center(
-                child: Container(
-                    width: 25.0.w,
-                    height: 4.5.h,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0),
-                        ),
+              Container(
+                  alignment: Alignment.center,
+                  width: 25.0.w,
+                  height: 4.5.h,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0),
                       ),
-                      child: Text(
-                        'Next',
-                        style: TextStyle(
-                          fontSize: 2.0.h,
-                          color: Colors.white,
-                        ),
+                    ),
+                    child: Text(
+                      'Next',
+                      style: TextStyle(
+                        fontSize: 2.0.h,
+                        color: Colors.white,
                       ),
-                      onPressed: phone_no.length == 10
-                          ? () async {
-                              print('i ma working');
-                              print(phone.length);
+                    ),
+                    onPressed: phone_no.length == 10
+                        ? () async {
+                            print('i ma working');
 
-                              phone = "+880$phone_no";
-                            }
-                          : () {
-                              print(phone.length);
-                            },
-                    )),
-              ),
+                            phone = "+880$phone_no";
+                            print(phone.length);
+                            attemptToLogin(phone_num: phone);
+                          }
+                        : () {
+                            print(phone.length);
+                          },
+                  )),
               SizedBox(
                 height: 3.0.h,
               ),
             ],
           ),
         ),
-      ),
-    );
+      ));
+    }, listener: (context, state) {
+      if (state is AuthLoading) {
+        EasyLoading.show();
+      }
+      if (state is AuthenticateSuccess) {
+        EasyLoading.dismiss();
+        SnackBarHelper.showSnack(
+            context: context, error: false, title: "Login Success");
+      }
+      if (state is AuthLoadingUnsuccessful) {
+        EasyLoading.dismiss();
+        SnackBarHelper.showSnack(
+            context: context, error: true, title: "${state.message}");
+      }
+    });
+  }
+
+  attemptToLogin({phone_num}) async {
+    String app_key = await SmsAutoFill().getAppSignature;
+    BlocProvider.of<AuthBloc>(context).add(AuthPhoneNumberButtonPressedEvent(
+        phone_no: phone_num, app_key: app_key));
   }
 }
 
