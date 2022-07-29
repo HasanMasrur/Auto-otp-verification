@@ -9,15 +9,11 @@ class ApiProvider {
     receiveTimeout: 3000,
   ));
 
-  Future<Either<DioError, Response>> login({phone_no, app_key}) async {
-    final Map<String, dynamic> authdata = {
-      'phone': phone_no,
-      'app_key': app_key
-    };
-    print('----------------authdata: ');
+  Future<Either<DioError, Response>> login(
+      {String? url, Map<String, dynamic>? authdata}) async {
     print(authdata);
     return await Task(() => dio.post(
-          '${ConstantData.SIGNUP_OTP}',
+          url!,
           data: authdata,
         )).attempt().run().then((either) {
       return either.fold((l) {

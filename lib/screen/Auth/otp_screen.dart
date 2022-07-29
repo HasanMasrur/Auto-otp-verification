@@ -1,12 +1,21 @@
+import 'package:auto_opt_varifacation/screen/Auth/Bloc/auth_bloc.dart';
+import 'package:auto_opt_varifacation/screen/Auth/Bloc/auth_event.dart';
 import 'package:auto_opt_varifacation/screen/Auth/widget/custom_button.dart';
+import 'package:auto_opt_varifacation/screen/constantdata/snackbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:sizer/sizer.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import 'Bloc/auth_state.dart';
+
 class OtpScreen extends StatefulWidget {
-  // final String phone;
-  // OtpScreen(this.phone, );
+  final String phone;
+  OtpScreen(
+    this.phone,
+  );
   @override
   _RegistationScreen createState() => _RegistationScreen();
 }
@@ -108,15 +117,39 @@ class _RegistationScreen extends State<OtpScreen> {
                 perimeter : onpressed 
                 type: void Function()? onPressed;
                  */
-                CustomButton(
-                  onPressed: () {
-                    if (pin!.length == 4) {}
-                  },
-                )
+                BlocConsumer<AuthBloc, AuthState>(builder: (context, state) {
+                  return CustomButton(
+                    onPressed: () {
+                      if (pin!.length == 4) {}
+                    },
+                  );
+                }, listener: (context, state) {
+                  if (state is AuthLoading) {
+                    EasyLoading.show();
+                  }
+                  if (state is AuthenticateSuccess) {
+                    EasyLoading.dismiss();
+                    SnackBarHelper.showSnack(
+                        context: context, error: false, title: "Otp Success");
+                  }
+                  if (state is AuthLoadingUnsuccessful) {
+                    EasyLoading.dismiss();
+                    SnackBarHelper.showSnack(
+                        context: context,
+                        error: true,
+                        title: "${state.message}");
+                  }
+                }),
               ],
             )),
       ),
     );
+  }
+
+  attemptToLogin({pin}) async {
+    String app_key = await SmsAutoFill().getAppSignature;
+    BlocProvider.of<AuthBloc>(context)
+        .add(AuthPhoneNumberVerfiedUsingOtp(phone_no: widget.phone, code: pin));
   }
 
   Widget onlySelectedBorderPinPut() {
