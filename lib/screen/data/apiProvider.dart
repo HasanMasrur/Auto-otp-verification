@@ -21,12 +21,8 @@ class ApiProvider {
           data: authdata,
         )).attempt().run().then((either) {
       return either.fold((l) {
-        print('---------------- ');
-        print(l);
         return Left(l as DioError);
       }, (r) {
-        print('---------------- ');
-        print(r);
         return Right(r);
       });
     });
