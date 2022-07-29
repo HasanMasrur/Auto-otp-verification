@@ -1,6 +1,7 @@
 import 'package:auto_opt_varifacation/screen/Auth/Bloc/auth_bloc.dart';
 import 'package:auto_opt_varifacation/screen/Auth/Bloc/auth_event.dart';
 import 'package:auto_opt_varifacation/screen/Auth/widget/custom_button.dart';
+import 'package:auto_opt_varifacation/screen/HomeScreen/home_page.dart';
 import 'package:auto_opt_varifacation/screen/constantdata/snackbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +121,9 @@ class _RegistationScreen extends State<OtpScreen> {
                 BlocConsumer<AuthBloc, AuthState>(builder: (context, state) {
                   return CustomButton(
                     onPressed: () {
-                      if (pin!.length == 4) {}
+                      if (pin!.length == 4) {
+                        attemptToLogin(pin: pin);
+                      }
                     },
                   );
                 }, listener: (context, state) {
@@ -131,6 +134,8 @@ class _RegistationScreen extends State<OtpScreen> {
                     EasyLoading.dismiss();
                     SnackBarHelper.showSnack(
                         context: context, error: false, title: "Otp Success");
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
                   }
                   if (state is AuthLoadingUnsuccessful) {
                     EasyLoading.dismiss();
@@ -147,7 +152,6 @@ class _RegistationScreen extends State<OtpScreen> {
   }
 
   attemptToLogin({pin}) async {
-    String app_key = await SmsAutoFill().getAppSignature;
     BlocProvider.of<AuthBloc>(context)
         .add(AuthPhoneNumberVerfiedUsingOtp(phone_no: widget.phone, code: pin));
   }

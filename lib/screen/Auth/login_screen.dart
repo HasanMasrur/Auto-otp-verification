@@ -149,7 +149,11 @@ class _LoginScreenState extends State<LoginScreen> {
               if (state is AuthenticateSuccess) {
                 EasyLoading.dismiss();
                 SnackBarHelper.showSnack(
-                    context: context, error: false, title: "Otp Success");
+                    context: context,
+                    error: false,
+                    title: "OTP Successfully Send");
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => OtpScreen(phone)));
               }
               if (state is AuthLoadingUnsuccessful) {
                 EasyLoading.dismiss();
