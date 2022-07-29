@@ -1,5 +1,6 @@
+import 'package:auto_opt_varifacation/screen/Auth/widget/custom_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
@@ -32,34 +33,6 @@ class _RegistationScreen extends State<OtpScreen> {
   final PageController _pageController = PageController(initialPage: 1);
   int _pageIndex = 0;
   String? pin = '';
-  Widget onlySelectedBorderPinPut() {
-    return Form(
-      key: _formKey,
-      child: PinFieldAutoFill(
-        decoration: UnderlineDecoration(
-          textStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
-          colorBuilder: FixedColorBuilder(Colors.grey),
-        ),
-        codeLength: 4,
-        cursor: Cursor(
-          width: 2,
-          height: 40,
-          color: Colors.red,
-          radius: Radius.circular(1),
-          enabled: true,
-        ),
-        focusNode: _pinPutFocusNode,
-        controller: _pinPutController,
-        onCodeChanged: (val) {
-          pin = val;
-          print("Autofilled " + pin.toString());
-        },
-        onCodeSubmitted: (val) {
-          print("Submitted " + val);
-        },
-      ),
-    );
-  }
 
   bool ischeck = false;
 
@@ -78,7 +51,8 @@ class _RegistationScreen extends State<OtpScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon:
+              Icon(CupertinoIcons.back, color: Color(0xffb8242a), size: 6.0.h),
           onPressed: () => Navigator.of(context).pop(),
         ),
         centerTitle: true,
@@ -87,31 +61,30 @@ class _RegistationScreen extends State<OtpScreen> {
       ),
       body: SingleChildScrollView(
         child: Container(
+            margin: EdgeInsets.only(
+              left: 15.0.w,
+              right: 15.0.w,
+            ),
             height: 87.0.h,
             width: 100.0.w,
             child: Column(
               children: [
                 SizedBox(
-                  height: 15.0.h,
-                ),
-                Container(
-                  height: 4.0.h,
-                  child: Center(
-                    child: Text('OTP',
-                        style: TextStyle(
-                          fontSize: 15.0.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xffb8242a),
-                        )),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                    left: 15.0.w,
-                    right: 15.0.w,
-                    top: 3.0.h,
-                  ),
                   height: 10.0.h,
+                ),
+                Center(
+                  child: Text('OTP',
+                      style: TextStyle(
+                        fontSize: 20.0.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xffb8242a),
+                      )),
+                ),
+                SizedBox(
+                  height: 10.0.h,
+                ),
+                Container(
+                  height: 8.0.h,
                   width: 100.0.w,
                   child: Builder(
                     builder: (context) {
@@ -130,32 +103,49 @@ class _RegistationScreen extends State<OtpScreen> {
                 SizedBox(
                   height: 5.0.h,
                 ),
-                Container(
-                    height: 5.0.h,
-                    width: 30.0.w,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                              side: BorderSide(color: Colors.red)),
-                          primary: Color(0xffb8242a),
-                          //  onPrimary: Colors.black87,
-                          // elevation: 10.0,
-                          //  shadowColor: Colors.yellow[200],
-                        ),
-                        onPressed: () {
-                          if (pin!.length == 4) {}
-                        },
-                        child: Text(
-                          'Next',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 2.0.h),
-                        ))),
+                /*
+                Custom Button:
+                perimeter : onpressed 
+                type: void Function()? onPressed;
+                 */
+                CustomButton(
+                  onPressed: () {
+                    if (pin!.length == 4) {}
+                  },
+                )
               ],
             )),
+      ),
+    );
+  }
+
+  Widget onlySelectedBorderPinPut() {
+    return Form(
+      key: _formKey,
+      child: PinFieldAutoFill(
+        decoration: UnderlineDecoration(
+          textStyle:
+              TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          colorBuilder: FixedColorBuilder(Color(0xffb8242a)),
+          bgColorBuilder: FixedColorBuilder(Color(0xffb8242a)),
+        ),
+        codeLength: 4,
+        cursor: Cursor(
+          width: 2,
+          height: 35,
+          color: Color(0xffb8242a),
+          radius: Radius.circular(15),
+          enabled: true,
+        ),
+        focusNode: _pinPutFocusNode,
+        controller: _pinPutController,
+        onCodeChanged: (val) {
+          pin = val;
+          print("Autofilled " + pin.toString());
+        },
+        onCodeSubmitted: (val) {
+          print("Submitted " + val);
+        },
       ),
     );
   }
